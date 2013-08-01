@@ -169,11 +169,12 @@ public class Play{
      
     }
 	
-	String movieInfo(String movie)
+	String movieInfo(String folder, String movie)
 	{
 		try{
 			System.out.println("passed : " + movie);
-			String command = "/home/fabs/vlc-bin/./checkMovieInfo.sh " + "\"" + movie + "\"";
+			//String command = "/home/fabs/vlc-bin/./checkMovieInfo.sh " + "\"" + movie + "\"";
+			String command = "/home/fabs/vlc-bin/checkMovieInfo.sh " + "\"" + folder + "\"" + " \"" + movie + "\"";
 			System.out.println("command: " + command);
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command); 

@@ -63,7 +63,7 @@ public class RemoteGUI extends JPanel
 		//String[] infoArray = info_.split("\\r?\\n");
 		//String info = infoArray[0]; 
 		
-		String movieInfo = p_caller.movieInfo(info);
+		String movieInfo = p_caller.movieInfo(name, info);
 		//String[] movieInfoArray = movieInfo.split("\\r?\\n");
 		//int len = movieInfoArray.length;
 		
