@@ -16,6 +16,8 @@ public class RemoteGUI extends JPanel
 	
 	//Global swing elements that needs to be edited from multiple functions
 	private JList fileList;
+	private JPanel filelistpane;
+	private JPanel infopane;
 	//--------------------------
 	
 	String name;
@@ -29,41 +31,82 @@ public class RemoteGUI extends JPanel
 	protected JPanel createInfoPane()
 	{
 		JPanel movieInfoPanel = new JPanel();
+		movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.Y_AXIS));
+		JPanel actionButtonsPanel = new JPanel();
+		actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.X_AXIS));
+		
+		JButton playButton = new JButton("Play");
+			playButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e)
+				{
+	
+				}
+			});
+			
+		JButton backButton = new JButton("Back");
+			backButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e)
+				{
+					setRightSide(filelistpane);
+				}
+			});
+		actionButtonsPanel.add(backButton);
+		actionButtonsPanel.add(playButton);
+		
 		//String title = "<html><B><center>Movie Info</center></B><br><br></html>";
-		String title = "Title";
+		//String title = "Title";
 		
 		// Check if there is actually info for the movie
 		//p_caller.checkMovieInfo(name);
 		
-		String info_ = p_caller.listFiles(name);
-		String[] infoArray = info_.split("\\r?\\n");
-		String info = infoArray[0]; 
+		String info = p_caller.listFiles(name);
+		//String[] infoArray = info_.split("\\r?\\n");
+		//String info = infoArray[0]; 
 		
 		String movieInfo = p_caller.movieInfo(info);
-		String[] movieInfoArray = movieInfo.split("\\r?\\n");
-		int len = movieInfoArray.length;
+		//String[] movieInfoArray = movieInfo.split("\\r?\\n");
+		//int len = movieInfoArray.length;
 		
+		//System.out.println("Info: " + movieInfo);
 		//p_caller.checkMovieInfo(info);
 		
-		JLabel infoTitle = new JLabel(title);
+		//JLabel infoTitle = new JLabel(title);
 		
-		movieInfoPanel.add(infoTitle);
+		//movieInfoPanel.add(infoTitle);
+		JTextArea infoTextArea = new JTextArea(movieInfo);
+		infoTextArea.setEditable(false);
+		infoTextArea.setLineWrap(true);
+		infoTextArea.setWrapStyleWord(true);
+		JScrollPane infoScrollArea = new JScrollPane(infoTextArea);
 		
-		for (int i = 0; i < len; i++)
+		movieInfoPanel.add(infoScrollArea);
+		movieInfoPanel.add(actionButtonsPanel);
+		
+		/*for (int i = 0; i < len; i++)
 		{
 			movieInfo = movieInfoArray[i];
 			JLabel infoLabel = new JLabel(movieInfo);	
 			movieInfoPanel.add(infoLabel);
 			movieInfoPanel.setPreferredSize(new Dimension(350, 190));
-		}
+		}*/
 		
 		
 		return movieInfoPanel;
 	}
 		
+	
+	protected void setRightSide(Component pane) {
+		int splitlocation = splitPane.getDividerLocation();
+		splitPane.setRightComponent(pane);
+		splitPane.setDividerLocation(splitlocation);
+	}
+	
 	//Creates the initial right side of the split pane used, the ones for selecting the file to be viewed.
 	protected JPanel fileListPane() {
 			JButton button = new JButton("Select");
+			
+			//Sets the global file list pane to this, so it stays in memory even when it isn't displayed
+			
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
@@ -71,8 +114,9 @@ public class RemoteGUI extends JPanel
 					//System.out.println("Movie " + name + " is being played");
 					//p_caller.playMovie(name + "/" + fileList.getSelectedValue().toString());
 					//System.out.println(name + "/" + fileList.getSelectedValue().toString());'
-					splitPane.remove(1);
-					splitPane.add(createInfoPane(), 1);
+					//splitPane.remove(1);
+					//splitPane.add(createInfoPane(), 1);
+					setRightSide(createInfoPane());
 				}
 			});  
 			
@@ -86,10 +130,12 @@ public class RemoteGUI extends JPanel
 			
 			// rightSide is the entire right side of the split pane.
 			JPanel rightSide = new JPanel();
+			rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 			rightSide.add(fileScroll);
 			rightSide.add(buttons);
-			rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 			rightSide.add(Box.createHorizontalGlue());
+			
+			filelistpane = rightSide;
 			
 			return rightSide;
 		}
@@ -119,6 +165,7 @@ public class RemoteGUI extends JPanel
 
         //Create a split pane with the two scroll panes in it.
         //splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, listScrollPane, rightSide);
+		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, movieListPane(), fileListPane());
         splitPane.setOneTouchExpandable(true);
         //splitPane.setDividerLocation(150);
