@@ -1,0 +1,12 @@
+8/01/2013 - 11:30 am Cameron Fabbri
+-----------------------------------
+
+Added movieInfo(String movie) which takes in the filename with extension 
+and calls the script checkMovieInfo.sh
+
+checkMovieInfo.sh takes in the file name as a parameter and checks to see
+if a .mvinfo file exists.  If not, it calls the findmovie script and gets
+the movie info, then cats it out.  If the file does exist it just cats it
+Currently works fine with command line but not in the program.
+
+-------------------------------------------------------------------------
