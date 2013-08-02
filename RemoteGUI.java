@@ -59,9 +59,11 @@ public class RemoteGUI extends JPanel
 		// Check if there is actually info for the movie
 		//p_caller.checkMovieInfo(name);
 		
-		String info = p_caller.listFiles(name);
-		//String[] infoArray = info_.split("\\r?\\n");
-		//String info = infoArray[0]; 
+		
+		//to remove the newline at the end of name
+		String info_ = p_caller.listFiles(name);
+		String[] infoArray = info_.split("\\r?\\n");
+		String info = infoArray[0]; 
 		
 		String movieInfo = p_caller.movieInfo(name, info);
 		//String[] movieInfoArray = movieInfo.split("\\r?\\n");

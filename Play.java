@@ -194,7 +194,7 @@ public class Play{
 				}   
 			 }
 			*/
-			System.out.println(readInputStream());
+			//System.out.println(readInputStream());
 			return readInputStream();
 		} catch (Exception e) {
 			System.err.println("Error: " + e);
