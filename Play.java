@@ -25,9 +25,9 @@ public class Play{
 	void connect() {
 		try{
 		jsch = new JSch();
-		host = "oscar.zapto.org";
-		user = "fabs";
-		password = "cameron";
+		host = "";
+		user = "";
+		password = "";
 		session = jsch.getSession(user, host, 22);
 		ui = new MyUserInfo();
 		session.setUserInfo(ui);
@@ -94,16 +94,7 @@ public class Play{
 	String getMovies()
 	{
 		try {	
-			/*jsch = new JSch();
-			host = "oscar.zapto.org";
-			user = "fabs";
-			password = "cameron";
-			session = jsch.getSession(user, host, 22);
-			ui = new MyUserInfo();
-			session.setUserInfo(ui);
-			session.connect(); */
-			//System.out.println("In getMovies()");
-			//System.out.println("Connection status: " + session.isConnected());
+		
 			String command = "/home/fabs/vlc-bin/list.sh"; 
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command);
@@ -113,19 +104,7 @@ public class Play{
 			
 			channel.connect();
 			return readInputStream();
-			/*InputStream in = channel.getInputStream();
-			String movielist;
-			byte[] tmp = new byte[10000];
-			while(true)
-			{
-				while(in.available()>0)
-				{
-					int i = in.read(tmp, 0, 10000);
-					if(i < 0) break;
-					movielist = new String(tmp, 0, i);
-					return movielist;
-				}   
-			 }*/
+	
 		}catch(Exception e){
 			System.out.println(e);
 		} return "getMovies: Error, data could not be retrieved.";
