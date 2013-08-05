@@ -10,3 +10,10 @@ the movie info, then cats it out.  If the file does exist it just cats it
 Currently works fine with command line but not in the program.
 
 -------------------------------------------------------------------------
+
+
+8/05/2013 - 12:00 pm Cameron Fabbri
+-----------------------------------
+
+Grabing the movie info works from the GUI now, but only if logged in as 
+root.
