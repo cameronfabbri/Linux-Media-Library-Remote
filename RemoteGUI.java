@@ -5,6 +5,16 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+import java.net.*;
+import javax.imageio.*;
 
 public class RemoteGUI extends JPanel
                           implements ListSelectionListener {
@@ -13,7 +23,7 @@ public class RemoteGUI extends JPanel
     private JSplitPane splitPane;
 	private JPanel movieInfoPane;
 	private JButton playButton;
-	
+	private BufferedImage moviePoster;
 	//Global swing elements that needs to be edited from multiple functions
 	private JList fileList;
 	private JPanel filelistpane;
@@ -28,18 +38,81 @@ public class RemoteGUI extends JPanel
 	String filelist;//the list of files in a movie directory
     String[] movieNames = movielist.split("\\r?\\n");
 
+	protected JPanel createPlayingPane()
+	{
+		JPanel playingPanel = new JPanel();
+		playingPanel.setLayout(new BoxLayout(playingPanel, BoxLayout.Y_AXIS));
+		JPanel movieButtonsPanel = new JPanel();
+		movieButtonsPanel.setLayout(new BoxLayout(movieButtonsPanel, BoxLayout.X_AXIS));
+		//JButton playpauseButton = new JButton("Play/pause");
+		
+		
+		//JButton stopButton = new JButton("Stop");
+			
+		
+		String info_ = p_caller.listFiles(name);
+		String[] infoArray = info_.split("\\r?\\n");
+		String info = infoArray[0]; 
+		
+		
+		JLabel title = new JLabel("Now Playing");
+		//title.setFont(new Font("Comic Sans", Font.PLAIN, 30));
+		playingPanel.add(title);
+		
+		
+		Image movieImage = p_caller.getPicture(name, info);
+		
+		
+		ImageIcon icon = new ImageIcon(movieImage);
+		JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
+		JPanel picturePanel = new JPanel(new BorderLayout());
+		picturePanel.add(pictureLabel, BorderLayout.CENTER);
+		playingPanel.add(picturePanel);
+		
+		
+		try {
+			BufferedImage playbuttonIcon = ImageIO.read(new File("img\\playbutton.png"));
+			JButton playpauseButton = new JButton(new ImageIcon(playbuttonIcon));
+			movieButtonsPanel.add(playpauseButton);
+			BufferedImage stopbuttonIcon = ImageIO.read(new File("img\\stop.png"));
+			JButton stopButton = new JButton(new ImageIcon(stopbuttonIcon));
+			movieButtonsPanel.add(stopButton);
+			
+			stopButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.killVLC();
+				setRightSide(filelistpane);
+			}
+			});
+			
+		} catch (Exception e) { System.out.println(e); } 
+		
+		playingPanel.add(movieButtonsPanel);
+		
+
+		
+		return playingPanel;
+	}
+	
 	protected JPanel createInfoPane()
 	{
 		JPanel movieInfoPanel = new JPanel();
 		movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.Y_AXIS));
 		JPanel actionButtonsPanel = new JPanel();
 		actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.X_AXIS));
+		JPanel moviePicture = new JPanel();
+			moviePicture.setLayout(new BoxLayout(moviePicture, BoxLayout.X_AXIS));
+		
 		
 		JButton playButton = new JButton("Play");
 			playButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
-	
+					//splitPane.remove(0);
+					String moviePlay = name + "/" + fileList.getSelectedValue().toString();
+					setRightSide(createPlayingPane());
+					p_caller.playMovie(moviePlay);
 				}
 			});
 			
@@ -53,28 +126,12 @@ public class RemoteGUI extends JPanel
 		actionButtonsPanel.add(backButton);
 		actionButtonsPanel.add(playButton);
 		
-		//String title = "<html><B><center>Movie Info</center></B><br><br></html>";
-		//String title = "Title";
-		
-		// Check if there is actually info for the movie
-		//p_caller.checkMovieInfo(name);
-		
-		
-		//to remove the newline at the end of name
 		String info_ = p_caller.listFiles(name);
 		String[] infoArray = info_.split("\\r?\\n");
 		String info = infoArray[0]; 
 		
 		String movieInfo = p_caller.movieInfo(name, info);
-		//String[] movieInfoArray = movieInfo.split("\\r?\\n");
-		//int len = movieInfoArray.length;
-		
-		//System.out.println("Info: " + movieInfo);
-		//p_caller.checkMovieInfo(info);
-		
-		//JLabel infoTitle = new JLabel(title);
-		
-		//movieInfoPanel.add(infoTitle);
+
 		JTextArea infoTextArea = new JTextArea(movieInfo);
 		infoTextArea.setEditable(false);
 		infoTextArea.setLineWrap(true);
@@ -82,16 +139,16 @@ public class RemoteGUI extends JPanel
 		JScrollPane infoScrollArea = new JScrollPane(infoTextArea);
 		
 		movieInfoPanel.add(infoScrollArea);
+		
+		Image movieImage = p_caller.getPicture(name, info);
+		ImageIcon icon = new ImageIcon(movieImage);
+		JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
+		JPanel picturePanel = new JPanel(new BorderLayout());
+		picturePanel.add(pictureLabel, BorderLayout.CENTER);
+		movieInfoPanel.add(picturePanel);
+		
 		movieInfoPanel.add(actionButtonsPanel);
-		
-		/*for (int i = 0; i < len; i++)
-		{
-			movieInfo = movieInfoArray[i];
-			JLabel infoLabel = new JLabel(movieInfo);	
-			movieInfoPanel.add(infoLabel);
-			movieInfoPanel.setPreferredSize(new Dimension(350, 190));
-		}*/
-		
+
 		
 		return movieInfoPanel;
 	}
@@ -112,10 +169,11 @@ public class RemoteGUI extends JPanel
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
+					
 					//Execute when button is pressed
 					//System.out.println("Movie " + name + " is being played");
 					//p_caller.playMovie(name + "/" + fileList.getSelectedValue().toString());
-					//System.out.println(name + "/" + fileList.getSelectedValue().toString());'
+					System.out.println(name + "/" + fileList.getSelectedValue().toString());
 					//splitPane.remove(1);
 					//splitPane.add(createInfoPane(), 1);
 					setRightSide(createInfoPane());
@@ -185,7 +243,7 @@ public class RemoteGUI extends JPanel
     
     //Listens to the list
     public void valueChanged(ListSelectionEvent e) {
-		System.out.println("Listener e: " + e.getValueIsAdjusting());
+		//System.out.println("Listener e: " + e.getValueIsAdjusting());
 		if (!e.getValueIsAdjusting())
 		{
 			JList list = (JList)e.getSource();
@@ -219,7 +277,7 @@ public class RemoteGUI extends JPanel
 	
 	protected void updateLabel (String name_) {
 		String info = p_caller.listDir(name_); 
-        System.out.println("Info: " + info);
+        //System.out.println("Info: " + info);
 		name=name_;
 	}
 
@@ -236,7 +294,6 @@ public class RemoteGUI extends JPanel
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
-            //System.err.println("Couldn't find file: " + path);
             return null;
         }
     }
