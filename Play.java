@@ -64,9 +64,9 @@ public class Play{
 	void connect() {
 		try{
 		jsch = new JSch();
-		host = "oscar.zapto.org";
-		user = "fabs";
-		password = "cameron";
+		host = ".zapto.org";
+		user = "";
+		password = "";
 		session = jsch.getSession(user, host, 22);
 		ui = new MyUserInfo();
 		session.setUserInfo(ui);
