@@ -59,7 +59,7 @@ public class RemoteGUI extends JPanel
 		//title.setFont(new Font("Comic Sans", Font.PLAIN, 30));
 		playingPanel.add(title);
 		
-		
+		/*
 		Image movieImage = p_caller.getPicture(name, info);
 		
 		
@@ -68,6 +68,7 @@ public class RemoteGUI extends JPanel
 		JPanel picturePanel = new JPanel(new BorderLayout());
 		picturePanel.add(pictureLabel, BorderLayout.CENTER);
 		playingPanel.add(picturePanel);
+		*/
 		
 		
 		try {
@@ -140,13 +141,13 @@ public class RemoteGUI extends JPanel
 		
 		movieInfoPanel.add(infoScrollArea);
 		
-		Image movieImage = p_caller.getPicture(name, info);
+		/*Image movieImage = p_caller.getPicture(name, info);
 		ImageIcon icon = new ImageIcon(movieImage);
 		JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
 		JPanel picturePanel = new JPanel(new BorderLayout());
 		picturePanel.add(pictureLabel, BorderLayout.CENTER);
 		movieInfoPanel.add(picturePanel);
-		
+		*/
 		movieInfoPanel.add(actionButtonsPanel);
 
 		

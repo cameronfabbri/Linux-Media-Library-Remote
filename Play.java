@@ -64,9 +64,9 @@ public class Play{
 	void connect() {
 		try{
 		jsch = new JSch();
-		host = ".zapto.org";
-		user = "";
-		password = "";
+		host = "oscar.zapto.org";
+		user = "fabs";
+		password = "cameron";
 		session = jsch.getSession(user, host, 22);
 		ui = new MyUserInfo();
 		session.setUserInfo(ui);
@@ -194,26 +194,13 @@ public class Play{
 			System.out.println("passed : " + movie);
 			//String command = "/home/fabs/vlc-bin/./checkMovieInfo.sh " + "\"" + movie + "\"";
 			String command = "/home/fabs/vlc-bin/checkMovieInfo.sh " + "\"" + folder + "\"" + " \"" + movie + "\"";
-			//System.out.println("command: " + command);
+			//System.out.println(command);
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command); 
 			channel.setInputStream(null);
 			((ChannelExec)channel).setErrStream(System.err);
 			channel.connect();
 			
-			/*InputStream in = channel.getInputStream();
-			byte[] tmp = new byte[10000];
-			while(true)
-			{
-				while(in.available()>0)
-				{
-					int i = in.read(tmp, 0, 10000);
-					if(i < 0) break;
-					return( new String(tmp, 0, i));
-				}   
-			 }
-			*/
-			//System.out.println(readInputStream());
 			return readInputStream();
 		} catch (Exception e) {
 			System.err.println("Error: " + e);
