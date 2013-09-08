@@ -24,6 +24,7 @@ public class Play{
 		connect();
 	}
 	
+	
 	void killVLC()
 	{
 		try{
@@ -38,13 +39,39 @@ public class Play{
 		}
 	}
 	
-	Image getPicture(String filename, String movie)
+	BufferedImage getPicture(String filename, String movie)
 	{
-		Image dummy = null;
 		// filename is like Avatar.mkv
 		// movie is like Avatar
-		try {	
-			String command = "/home/fabs/vlc-bin/getPicture.sh " + "\"" + filename + "\"" + " \"" + movie + "\""; 
+		BufferedImage dummy = null;
+		try {
+			// username and password will be given via UserInfo interface.
+			//UserInfo ui=new MyUserInfo();
+			//session.setUserInfo(ui);
+			//session.connect();
+
+			// exec 'scp -f rfile' remotely
+			//String command="scp -f "+"\"\\home\\shared\\2TB\\Movies\\" + filename + "\\" + filename + ".jpginfo\"";
+			//System.out.println("Command = " + command);
+			Channel channel=session.openChannel("sftp");
+			//((ChannelExec)channel).setCommand(command);
+			channel.connect();
+			
+			ChannelSftp sftpChannel = (ChannelSftp) channel;
+            System.out.println("Directory:" + sftpChannel.pwd());
+			String dir = "/home/shared/2TB/Movies/" + filename;
+			String file = filename + ".jpginfo";
+			System.out.println(dir);
+			
+            sftpChannel.cd(dir);
+			System.out.println("Directory:" + sftpChannel.pwd());
+            InputStream in_picture = sftpChannel.get(filename + ".jpginfo");
+			
+			System.out.println(in_picture.toString());
+			BufferedImage imBuff = ImageIO.read(in_picture);
+			System.out.println("Got this far");
+			return imBuff;
+			/*String command = "/home/fabs/vlc-bin/getPicture.sh " + "\"" + filename + "\"" + " \"" + movie + "\""; 
 			//System.out.println("command: " + command);
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command);
@@ -54,7 +81,7 @@ public class Play{
 			String picURL = readInputStream();
 			URL url = new URL(picURL);
 			Image image = ImageIO.read(url);
-			return image;
+			return image;*/
 	
 		}catch(Exception e){
 			System.out.println(e);
@@ -194,7 +221,7 @@ public class Play{
 			System.out.println("passed : " + movie);
 			//String command = "/home/fabs/vlc-bin/./checkMovieInfo.sh " + "\"" + movie + "\"";
 			String command = "/home/fabs/vlc-bin/checkMovieInfo.sh " + "\"" + folder + "\"" + " \"" + movie + "\"";
-			//System.out.println(command);
+			System.out.println(command);
 			channel = session.openChannel("exec");
 			((ChannelExec)channel).setCommand(command); 
 			channel.setInputStream(null);

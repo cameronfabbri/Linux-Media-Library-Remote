@@ -99,7 +99,9 @@ public class RemoteGUI extends JPanel
 	protected JPanel createInfoPane()
 	{
 		JPanel movieInfoPanel = new JPanel();
-		movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.Y_AXIS));
+		movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.X_AXIS));
+		JPanel movieOverallPanel = new JPanel();
+		movieOverallPanel.setLayout(new BoxLayout(movieOverallPanel, BoxLayout.Y_AXIS));
 		JPanel actionButtonsPanel = new JPanel();
 		actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.X_AXIS));
 		JPanel moviePicture = new JPanel();
@@ -139,19 +141,41 @@ public class RemoteGUI extends JPanel
 		infoTextArea.setWrapStyleWord(true);
 		JScrollPane infoScrollArea = new JScrollPane(infoTextArea);
 		
-		movieInfoPanel.add(infoScrollArea);
+		//movieInfoPanel.add(infoScrollArea);
 		
-		/*Image movieImage = p_caller.getPicture(name, info);
-		ImageIcon icon = new ImageIcon(movieImage);
-		JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
-		JPanel picturePanel = new JPanel(new BorderLayout());
-		picturePanel.add(pictureLabel, BorderLayout.CENTER);
-		movieInfoPanel.add(picturePanel);
-		*/
-		movieInfoPanel.add(actionButtonsPanel);
-
+		//JLabel moviePoster = new JLabel(new ImageIcon(p_caller.getPicture(name, info)));
+		BufferedImage moviePoster = p_caller.getPicture(name, info);
+		ImageIcon posterIcon=null;
+		try{
+		posterIcon = new ImageIcon(moviePoster);
+		} catch (Exception e){
+			System.out.println(e + " Does the image file exist?");
+		}
+		JLabel posterlabel = new JLabel("", posterIcon, JLabel.CENTER);
+		JScrollPane posterScrollArea = new JScrollPane(posterlabel);
 		
-		return movieInfoPanel;
+		System.out.println("Also got this far");
+		System.out.println(posterIcon.toString());
+		
+		//panel.add( label, BorderLayout.CENTER );
+		//movieInfoPanel.add(posterScrollArea);
+		//Image movieImage = p_caller.getPicture(name, info);
+		//ImageIcon icon = new ImageIcon(movieImage);
+		//JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
+		//JPanel picturePanel = new JPanel(new BorderLayout());
+		//picturePanel.add(moviePoster, BorderLayout.CENTER);
+		//movieInfoPanel.add(picturePanel);
+		
+		
+		JSplitPane infoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, posterScrollArea, infoScrollArea);
+		//movieOverallPanel.add(movieInfoPanel);
+		//movieOverallPanel.add(infosplitPane);
+		infoSplitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+		infoSplitPane.setDividerLocation(posterIcon.getIconWidth());
+		movieOverallPanel.add(infoSplitPane);
+		movieOverallPanel.add(actionButtonsPanel);
+		
+		return movieOverallPanel;
 	}
 		
 	
