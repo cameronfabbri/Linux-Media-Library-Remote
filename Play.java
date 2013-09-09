@@ -92,8 +92,8 @@ public class Play{
 		try{
 		jsch = new JSch();
 		host = "oscar.zapto.org";
-		user = "fabs";
-		password = "cameron";
+		user = "";
+		password = "";
 		session = jsch.getSession(user, host, 22);
 		ui = new MyUserInfo();
 		session.setUserInfo(ui);
