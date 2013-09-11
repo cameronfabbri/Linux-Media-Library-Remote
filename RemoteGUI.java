@@ -192,9 +192,11 @@ public class RemoteGUI extends JPanel
 			//movieInfoPanel.add(infoScrollArea);
 			
 			//JLabel moviePoster = new JLabel(new ImageIcon(p_caller.getPicture(name, info)));
-			BufferedImage moviePoster = p_caller.getPicture(name, info);
 			ImageIcon posterIcon=null;
+			BufferedImage moviePoster = null;
+			
 			try{
+				moviePoster = p_caller.getPicture(name, info);
 				posterIcon = new ImageIcon(moviePoster);
 			} catch (Exception e){
 				System.out.println(e + " Does the image file exist?");
@@ -202,15 +204,17 @@ public class RemoteGUI extends JPanel
 			JLabel posterlabel = new JLabel("", posterIcon, JLabel.CENTER);
 			JScrollPane posterScrollArea = new JScrollPane(posterlabel);
 			
-			
-			
-			System.out.println("Also got this far");
-			System.out.println(posterIcon.toString());
-			
-			JSplitPane infoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, posterScrollArea, infoScrollArea);
-			infoSplitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-			infoSplitPane.setDividerLocation(posterIcon.getIconWidth());
-			movieOverallPanel.add(infoSplitPane);
+			JSplitPane infoSplitPane = null;
+			if(posterIcon != null){
+				//debugging output
+				System.out.println("Also got this far");
+				System.out.println(posterIcon.toString());
+				
+				infoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, posterScrollArea, infoScrollArea);
+				infoSplitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+				infoSplitPane.setDividerLocation(posterIcon.getIconWidth());
+				movieOverallPanel.add(infoSplitPane);
+			}
 			movieOverallPanel.add(actionButtonsPanel);
 			
 			return movieOverallPanel;
