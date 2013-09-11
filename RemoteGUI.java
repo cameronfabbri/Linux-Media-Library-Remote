@@ -20,6 +20,8 @@ public class RemoteGUI extends JPanel
                           implements ListSelectionListener {
     private JLabel picture;
     private JList list;
+	boolean power = false;
+	boolean playing = true;
     private JSplitPane splitPane;
 	private JPanel movieInfoPane;
 	private JButton playButton;
@@ -43,12 +45,7 @@ public class RemoteGUI extends JPanel
 		JPanel playingPanel = new JPanel();
 		playingPanel.setLayout(new BoxLayout(playingPanel, BoxLayout.Y_AXIS));
 		JPanel movieButtonsPanel = new JPanel();
-		movieButtonsPanel.setLayout(new BoxLayout(movieButtonsPanel, BoxLayout.X_AXIS));
-		//JButton playpauseButton = new JButton("Play/pause");
-		
-		
-		//JButton stopButton = new JButton("Stop");
-			
+		movieButtonsPanel.setLayout(new BoxLayout(movieButtonsPanel, BoxLayout.X_AXIS));		
 		
 		String info_ = p_caller.listFiles(name);
 		String[] infoArray = info_.split("\\r?\\n");
@@ -57,27 +54,71 @@ public class RemoteGUI extends JPanel
 		
 		JLabel title = new JLabel("Now Playing");
 		//title.setFont(new Font("Comic Sans", Font.PLAIN, 30));
-		playingPanel.add(title);
-		
-		/*
-		Image movieImage = p_caller.getPicture(name, info);
-		
-		
-		ImageIcon icon = new ImageIcon(movieImage);
-		JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
-		JPanel picturePanel = new JPanel(new BorderLayout());
-		picturePanel.add(pictureLabel, BorderLayout.CENTER);
-		playingPanel.add(picturePanel);
-		*/
-		
+		playingPanel.add(title);		
 		
 		try {
+		
+			BufferedImage reverseIcon = ImageIO.read(new File("img\\rewind.png"));
+			JButton reverseButton = new JButton(new ImageIcon(reverseIcon));
+			movieButtonsPanel.add(reverseButton);
+			
 			BufferedImage playbuttonIcon = ImageIO.read(new File("img\\playbutton.png"));
 			JButton playpauseButton = new JButton(new ImageIcon(playbuttonIcon));
 			movieButtonsPanel.add(playpauseButton);
+			
 			BufferedImage stopbuttonIcon = ImageIO.read(new File("img\\stop.png"));
 			JButton stopButton = new JButton(new ImageIcon(stopbuttonIcon));
 			movieButtonsPanel.add(stopButton);
+
+			BufferedImage volumeDownIcon = ImageIO.read(new File("img\\minus.png"));
+			JButton volumeDownButton = new JButton(new ImageIcon(volumeDownIcon));
+			movieButtonsPanel.add(volumeDownButton);
+			
+			BufferedImage volumeUpIcon = ImageIO.read(new File("img\\plus.png"));
+			JButton volumeUpButton = new JButton(new ImageIcon(volumeUpIcon));
+			movieButtonsPanel.add(volumeUpButton);
+	
+			BufferedImage forwardIcon = ImageIO.read(new File("img\\forward.png"));
+			JButton forwardButton = new JButton(new ImageIcon(forwardIcon));
+			movieButtonsPanel.add(forwardButton);
+			
+
+			
+			forwardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.forward();
+			}
+			});
+
+			reverseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.reverse();
+			}
+			});
+
+			volumeDownButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.volumeDown();
+			}
+			});
+			
+			volumeUpButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.volumeUp();
+			}
+			});
+
+			
+			playpauseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				p_caller.pause();
+			}
+			});
 			
 			stopButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -98,84 +139,86 @@ public class RemoteGUI extends JPanel
 	
 	protected JPanel createInfoPane()
 	{
-		JPanel movieInfoPanel = new JPanel();
-		movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.X_AXIS));
-		JPanel movieOverallPanel = new JPanel();
-		movieOverallPanel.setLayout(new BoxLayout(movieOverallPanel, BoxLayout.Y_AXIS));
-		JPanel actionButtonsPanel = new JPanel();
-		actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.X_AXIS));
-		JPanel moviePicture = new JPanel();
+		try {
+		
+			JPanel movieInfoPanel = new JPanel();
+			movieInfoPanel.setLayout(new BoxLayout(movieInfoPanel, BoxLayout.X_AXIS));
+			JPanel movieOverallPanel = new JPanel();
+			movieOverallPanel.setLayout(new BoxLayout(movieOverallPanel, BoxLayout.Y_AXIS));
+			JPanel actionButtonsPanel = new JPanel();
+			actionButtonsPanel.setLayout(new BoxLayout(actionButtonsPanel, BoxLayout.X_AXIS));
+			JPanel moviePicture = new JPanel();
 			moviePicture.setLayout(new BoxLayout(moviePicture, BoxLayout.X_AXIS));
-		
-		
-		JButton playButton = new JButton("Play");
+			
+			BufferedImage playButtonIcon = ImageIO.read(new File("img\\play.png"));
+			JButton playButton = new JButton(new ImageIcon(playButtonIcon));
+			playButton.setPreferredSize(new Dimension(60, 60));
+			
 			playButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
-					//splitPane.remove(0);
 					String moviePlay = name + "/" + fileList.getSelectedValue().toString();
 					setRightSide(createPlayingPane());
 					p_caller.playMovie(moviePlay);
 				}
 			});
 			
-		JButton backButton = new JButton("Back");
+			BufferedImage backButtonIcon = ImageIO.read(new File("img\\left.png"));
+			JButton backButton = new JButton(new ImageIcon(backButtonIcon));
+			backButton.setPreferredSize(new Dimension(60, 60));
+			
 			backButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
 					setRightSide(filelistpane);
 				}
 			});
-		actionButtonsPanel.add(backButton);
-		actionButtonsPanel.add(playButton);
-		
-		String info_ = p_caller.listFiles(name);
-		String[] infoArray = info_.split("\\r?\\n");
-		String info = infoArray[0]; 
-		
-		String movieInfo = p_caller.movieInfo(name, info);
 
-		JTextArea infoTextArea = new JTextArea(movieInfo);
-		infoTextArea.setEditable(false);
-		infoTextArea.setLineWrap(true);
-		infoTextArea.setWrapStyleWord(true);
-		JScrollPane infoScrollArea = new JScrollPane(infoTextArea);
-		
-		//movieInfoPanel.add(infoScrollArea);
-		
-		//JLabel moviePoster = new JLabel(new ImageIcon(p_caller.getPicture(name, info)));
-		BufferedImage moviePoster = p_caller.getPicture(name, info);
-		ImageIcon posterIcon=null;
-		try{
-		posterIcon = new ImageIcon(moviePoster);
-		} catch (Exception e){
-			System.out.println(e + " Does the image file exist?");
+			actionButtonsPanel.add(backButton);
+			actionButtonsPanel.add(playButton);
+			
+			String info_ = p_caller.listFiles(name);
+			String[] infoArray = info_.split("\\r?\\n");
+			String info = infoArray[0]; 
+			
+			String movieInfo = p_caller.movieInfo(name, info);
+
+			JTextArea infoTextArea = new JTextArea(movieInfo);
+			infoTextArea.setEditable(false);
+			infoTextArea.setLineWrap(true);
+			infoTextArea.setWrapStyleWord(true);
+			JScrollPane infoScrollArea = new JScrollPane(infoTextArea);
+			
+			//movieInfoPanel.add(infoScrollArea);
+			
+			//JLabel moviePoster = new JLabel(new ImageIcon(p_caller.getPicture(name, info)));
+			BufferedImage moviePoster = p_caller.getPicture(name, info);
+			ImageIcon posterIcon=null;
+			try{
+				posterIcon = new ImageIcon(moviePoster);
+			} catch (Exception e){
+				System.out.println(e + " Does the image file exist?");
+			}
+			JLabel posterlabel = new JLabel("", posterIcon, JLabel.CENTER);
+			JScrollPane posterScrollArea = new JScrollPane(posterlabel);
+			
+			
+			
+			System.out.println("Also got this far");
+			System.out.println(posterIcon.toString());
+			
+			JSplitPane infoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, posterScrollArea, infoScrollArea);
+			infoSplitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+			infoSplitPane.setDividerLocation(posterIcon.getIconWidth());
+			movieOverallPanel.add(infoSplitPane);
+			movieOverallPanel.add(actionButtonsPanel);
+			
+			return movieOverallPanel;
+		} catch (Exception e) {
+			JPanel dummy = new JPanel();
+			System.err.println("Error: " + e);
+			return dummy;
 		}
-		JLabel posterlabel = new JLabel("", posterIcon, JLabel.CENTER);
-		JScrollPane posterScrollArea = new JScrollPane(posterlabel);
-		
-		System.out.println("Also got this far");
-		System.out.println(posterIcon.toString());
-		
-		//panel.add( label, BorderLayout.CENTER );
-		//movieInfoPanel.add(posterScrollArea);
-		//Image movieImage = p_caller.getPicture(name, info);
-		//ImageIcon icon = new ImageIcon(movieImage);
-		//JLabel pictureLabel = new JLabel("", icon, JLabel.CENTER);
-		//JPanel picturePanel = new JPanel(new BorderLayout());
-		//picturePanel.add(moviePoster, BorderLayout.CENTER);
-		//movieInfoPanel.add(picturePanel);
-		
-		
-		JSplitPane infoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, posterScrollArea, infoScrollArea);
-		//movieOverallPanel.add(movieInfoPanel);
-		//movieOverallPanel.add(infosplitPane);
-		infoSplitPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-		infoSplitPane.setDividerLocation(posterIcon.getIconWidth());
-		movieOverallPanel.add(infoSplitPane);
-		movieOverallPanel.add(actionButtonsPanel);
-		
-		return movieOverallPanel;
 	}
 		
 	
@@ -187,42 +230,71 @@ public class RemoteGUI extends JPanel
 	
 	//Creates the initial right side of the split pane used, the ones for selecting the file to be viewed.
 	protected JPanel fileListPane() {
-			JButton button = new JButton("Select");
 			
-			//Sets the global file list pane to this, so it stays in memory even when it isn't displayed
+			JPanel powerButtons = new JPanel();
 			
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e)
+			try {
+				BufferedImage powerButtonIcon = ImageIO.read(new File("img\\power.png"));
+				JButton powerButton = new JButton(new ImageIcon(powerButtonIcon));
+				powerButton.setPreferredSize(new Dimension(60, 60));
+				
+				BufferedImage selectButtonIcon = ImageIO.read(new File("img\\right.png"));
+				JButton selectButton = new JButton(new ImageIcon(selectButtonIcon));
+				selectButton.setPreferredSize(new Dimension(60, 60));
+
+				
+				//JButton button = new JButton("Select");
+
+				powerButton.addActionListener(new ActionListener() 
 				{
-					
-					//Execute when button is pressed
-					//System.out.println("Movie " + name + " is being played");
-					//p_caller.playMovie(name + "/" + fileList.getSelectedValue().toString());
-					System.out.println(name + "/" + fileList.getSelectedValue().toString());
-					//splitPane.remove(1);
-					//splitPane.add(createInfoPane(), 1);
-					setRightSide(createInfoPane());
+					public void actionPerformed(ActionEvent e)
+					{
+						if (power == false)
+						{
+							p_caller.powerOn();
+							power = true;
+						}
+						else 
+						{
+							p_caller.powerOff();
+							power = false;
+						}
+					}
+				});	
+											
+				selectButton.addActionListener(new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println(name + "/" + fileList.getSelectedValue().toString());
+						setRightSide(createInfoPane());
+					}
+				});  
+				
+				JPanel buttons = new JPanel();
+				buttons.setMaximumSize(new Dimension(1000, 100)); //sets the button panel size to allow the files list to take up the most room
+				buttons.add(powerButton);
+				buttons.add(selectButton);
+				filelist = "";//p_caller.listFiles(name);    This is the globally defined file list, because it is updated with a separate function
+				String[] temp = filelist.split("\\r?\\n");
+				fileList = new JList(temp);
+				JScrollPane fileScroll = new JScrollPane(fileList);
+				
+				// rightSide is the entire right side of the split pane.
+				JPanel rightSide = new JPanel();
+				rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
+				rightSide.add(fileScroll);
+				rightSide.add(buttons);
+				rightSide.add(Box.createHorizontalGlue());
+				
+				filelistpane = rightSide;
+				return rightSide;
+				
+				} catch (Exception e) { 
+					System.err.println("Error: " + e); 
+					JPanel dummy = new JPanel();
+					return dummy;
 				}
-			});  
-			
-			JPanel buttons = new JPanel();
-			buttons.setMaximumSize(new Dimension(150, 50)); //sets the button panel size to allow the files list to take up the most room
-			buttons.add(button);
-			filelist = "";//p_caller.listFiles(name);    This is the globally defined file list, because it is updated with a separate function
-			String[] temp = filelist.split("\\r?\\n");
-			fileList = new JList(temp);
-			JScrollPane fileScroll = new JScrollPane(fileList);
-			
-			// rightSide is the entire right side of the split pane.
-			JPanel rightSide = new JPanel();
-			rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
-			rightSide.add(fileScroll);
-			rightSide.add(buttons);
-			rightSide.add(Box.createHorizontalGlue());
-			
-			filelistpane = rightSide;
-			
-			return rightSide;
 		}
 		
 	//creates the list of movies displayed on the left of the split pane	

@@ -20,10 +20,108 @@ public class Play{
 	UserInfo ui;
 	Channel channel;
 	
-	public Play() {
+	public Play() 
+	{
 		connect();
 	}
+
+	void reverse()
+	{
+		try{
+			String command = "DISPLAY=:0 xdotool key Alt+Left;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+		System.err.println("Error: " + e);
+		}
+	}
 	
+	void forward()
+	{
+		try{
+			String command = "DISPLAY=:0 xdotool key Alt+Right;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+		System.err.println("Error: " + e);
+		}
+	}
+	
+	void volumeUp()
+	{
+		try{
+			String command = "DISPLAY=:0 xdotool key Ctrl+Up;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+			System.err.println("Error: " + e);
+		}
+	}
+	
+	void volumeDown()
+	{
+		try{
+			String command = "DISPLAY=:0 xdotool key Ctrl+Down;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+			System.err.println("Error: " + e);
+		}	
+	}
+	
+	void pause()
+	{
+		try{
+			String command = "DISPLAY=:0 xdotool key space;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+			System.err.println("Error: " + e);
+		}
+	}
+	
+	void powerOff()
+	{
+		try{
+			String command = "DISPLAY=:0 xset dpms force off;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+			System.err.println("Error: " + e);
+		}
+	}
+	
+	void powerOn()
+	{
+		try{
+			String command = "DISPLAY=:0 xset dpms force on; DISPLAY=:0 xdotool key a;"; 
+			channel = session.openChannel("exec");
+			((ChannelExec)channel).setCommand(command); 
+			channel.setInputStream(null);
+			((ChannelExec)channel).setErrStream(System.err);
+			channel.connect();
+		} catch (Exception e) {
+			System.err.println("Error: " + e);
+		}
+	}
 	
 	void killVLC()
 	{
