@@ -399,7 +399,7 @@ public static class MyUserInfo implements UserInfo, UIKeyboardInteractive{
 			//						  JOptionPane.OK_CANCEL_OPTION);
       //if(result==JOptionPane.OK_OPTION){
         //passwd=passwordField.getText();
-        passwd="cameron";
+        passwd="";
         return true;
       //}
       //else{ 
